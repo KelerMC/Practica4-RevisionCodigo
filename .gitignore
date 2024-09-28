@@ -1,0 +1,17 @@
+# Ignorar archivos generados por NetBeans
+/nbproject/private/
+/build/
+/dist/
+
+# Ignorar dependencias
+*.jar
+
+# Ignorar archivos de configuración del sistema
+*.class
+*.log
+*.xml
+.DS_Store
+.idea/
+
+# Archivos específicos de Windows
+Thumbs.db
