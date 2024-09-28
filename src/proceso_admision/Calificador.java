@@ -29,7 +29,7 @@ public class Calificador {
 
     private List<Respuesta> obtenerRespuestas() throws SQLException {
         List<Respuesta> respuestas = new ArrayList<>();
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM respuesta"); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT ide_iIndice, res_vcRespuesta FROM respuesta"); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Respuesta respuesta = new Respuesta(rs.getInt("ide_iIndice"), rs.getString("res_vcRespuesta").replaceAll(" ", "*"));
                 respuestas.add(respuesta);
