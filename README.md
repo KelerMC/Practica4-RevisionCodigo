@@ -12,5 +12,5 @@ En este archivo se detectaron varios problemas, aquí la captura de SonarLint:
 - **Violación**: SonarLint detectó que el uso de `SELECT *` en una consulta SQL es un *code smell*, ya que puede afectar el rendimiento y la claridad del código. Se recomienda especificar las columnas necesarias en lugar de utilizar `SELECT *`.
 - **Antes**:
    ```java
-   String query = "SELECT * FROM calificacion WHERE id=?";
+   String query = ""SELECT * FROM respuesta"";
 
