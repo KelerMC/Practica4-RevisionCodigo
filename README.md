@@ -43,11 +43,11 @@ Con esto se redujeron 3 problemas con el SELECT*
 ## Descripción del problema
 - **Violación**: SonarLint detectó que el campo `Respuesta` deb ser marcado como `transient`o la clase `Respuesta`debe implementar `Serializable`para asegurar la correca serialización de la clase `Calificador`
 ## Explicación de la refactorización
-- **Correción:** Se decidió hacer que el campo `respuesta`sea `transient`para evitar problema e serialización.
+- **Correción:** Se decidió hacer que el campo `respuesta`sea `transient`para evitar problema de serialización.
 ## Código corregido
 - **Después:**
   ```java
   private transient List<Respuesta> respuestas;
   private transient List<Clave> claves;
   private transient List<Rango> rangos;
-Se corrigió las demás clases. SonarLint indica que la variables que se mosotró deberían ser "transient or serializable" se debe a que se utiliza las clases como parte de un proceso que involucra concurrencia o serialización, y Java necesita asegurarse de que los objetos puedan ser serializados correctamente en esos contextos.
+Se corrigió las demás clases. SonarLint indica que la variables que se mostró deberían ser "transient or serializable" se debe a que se utiliza las clases como parte de un proceso que involucra concurrencia o serialización, y Java necesita asegurarse de que los objetos puedan ser serializados correctamente en esos contextos. Como estos campos no necesitan ser serializados, porque se usarán localmente dentro de la ejecución, se utiliza `transient`. Con esto se redujeron los problemas a 8.
