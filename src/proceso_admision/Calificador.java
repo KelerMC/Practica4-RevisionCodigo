@@ -40,7 +40,7 @@ public class Calificador {
 
     private List<Clave> obtenerClaves() throws SQLException {
         List<Clave> claves = new ArrayList<>();
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM clave"); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT cla_iIndice, cla_iPosicion, cla_vcRespuesta FROM clave"); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Clave clave = new Clave(rs.getInt("cla_iIndice"), rs.getInt("cla_iPosicion"), rs.getString("cla_vcRespuesta"));
                 claves.add(clave);
@@ -51,7 +51,7 @@ public class Calificador {
 
     private List<Rango> obtenerRangos() throws SQLException {
         List<Rango> rangos = new ArrayList<>();
-        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM rango"); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT ran_iIndiceMinimo, ran_iIndiceMaximo, cla_iPosicion FROM rango"); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Rango rango = new Rango(rs.getInt("ran_iIndiceMinimo"), rs.getInt("ran_iIndiceMaximo"), rs.getInt("cla_iPosicion"));
                 rangos.add(rango);
@@ -83,9 +83,9 @@ public class Calificador {
 
     private class CalificarTask extends RecursiveAction {
 
-        private List<Respuesta> respuestas;
-        private List<Clave> claves;
-        private List<Rango> rangos;
+        private transient List<Respuesta> respuestas;
+        private transient List<Clave> claves;
+        private transient List<Rango> rangos;
         private int threshold;
         private int numParts;
 
