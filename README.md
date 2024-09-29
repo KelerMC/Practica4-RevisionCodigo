@@ -50,4 +50,4 @@ Con esto se redujeron 3 problemas con el SELECT*
   private transient List<Respuesta> respuestas;
   private transient List<Clave> claves;
   private transient List<Rango> rangos;
-Se corrigió las demás clases. SonarLint indica que la variables que se mostró deberían ser "transient or serializable" se debe a que se utiliza las clases como parte de un proceso que involucra concurrencia o serialización, y Java necesita asegurarse de que los objetos puedan ser serializados correctamente en esos contextos. Como estos campos no necesitan ser serializados, porque se usarán localmente dentro de la ejecución, se utiliza `transient`. Con esto se redujeron los problemas a 8.
+Se corrigió las demás clases. SonarLint indica que la variables que se mostró deberían ser "transient or serializable" y se debe a que se utiliza las clases como parte de un proceso que involucra concurrencia o serialización, y Java necesita asegurarse de que los objetos puedan ser serializados correctamente en esos contextos. Como estos campos no necesitan ser serializados, porque se usarán localmente dentro de la ejecución, se utilizará `transient`. Con esto se redujeron los problemas a 8.
