@@ -68,11 +68,35 @@ La mayoría de las advertencias son porque algunas sentencias como los `imports`
 - **Antes**:
   ```java
   public class DatabaseConnection {
-      private static final String URL = "jdbc:mysql://localhost:3306/tu_base_de_datos";
-      private static final String USER = "tu_usuario";
-      private static final String PASSWORD = "contraseña_comprometida"; // Contraseña comprometida
+      private static final String URL = "jdbc:mysql://localhost:3306/admisión_martes";
+      private static final String USER = "root";
+      private static final String PASSWORD = "root"; // Contraseña comprometida
 
       public static Connection getConnection() throws SQLException {
           return DriverManager.getConnection(URL, USER, PASSWORD);
       }
   }
+## Descripción del problema
+- **Violación**: SonarLint detectó que la contraseña está expuesta en el código fuente, lo cual es una vulnerabilidad crítica. Las contraseñas no deben estar hardcodeadas en el código fuente, ya que pueden ser comprometidas fácilmente.
+## Explicación de la refactorización
+- **Corrección**: Se cambió la contraseña comprometida por una nueva contraseña segura y se movió la configuración de la base de datos a un archivo de propiedades para evitar la exposición de credenciales en el código fuente.
+
+## Código corregido
+- **Después:**
+  ```java
+    public class DatabaseConnection {
+    private static final String PROPERTIES_FILE = "database.properties";
+
+    public static Connection getConnection() throws SQLException, IOException {
+        Properties props = new Properties();
+        try (FileInputStream fis = new FileInputStream(PROPERTIES_FILE)) {
+            props.load(fis);
+        }
+
+        String url = props.getProperty("db.url");
+        String user = props.getProperty("db.user");
+        String password = props.getProperty("db.password");
+
+        return DriverManager.getConnection(url, user, password);
+    }
+}
