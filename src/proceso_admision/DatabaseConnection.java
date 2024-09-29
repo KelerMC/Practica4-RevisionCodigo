@@ -6,30 +6,30 @@ package proceso_admision;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Properties;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.io.FileInputStream;
 import java.sql.SQLException;
+import java.io.IOException;
 
 /**
  *
  * @author Keler
  */
 public class DatabaseConnection {
+    private static final String PROPERTIES_FILE = "database.properties";
 
-    private static final String URL = "jdbc:mysql://localhost:3306/admision_martes";
-    private static final String USER = "root";
-    private static final String PASSWORD = "root";
-
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error al cargar el driver JDBC", e);
+    public static Connection getConnection() throws SQLException, IOException {
+        Properties props = new Properties();
+        try (FileInputStream fis = new FileInputStream(PROPERTIES_FILE)) {
+            props.load(fis);
         }
-    }
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
-    }
+        String url = props.getProperty("db.url");
+        String user = props.getProperty("db.user");
+        String password = props.getProperty("db.password");
 
+        return DriverManager.getConnection(url, user, password);
+    }
 }

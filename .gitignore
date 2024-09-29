@@ -1,4 +1,4 @@
-# Ignorar archivos generados por NetBeans
+# Ignorar archivos
 /nbproject/private/
 /build/
 /dist/
