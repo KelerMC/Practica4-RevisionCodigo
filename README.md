@@ -3,7 +3,7 @@
  Código: 18200114
  Curso: Verificación y validación de software. 2024-2
 ## Reporte de problemas
-### Archivo: Calificador.java
+## Archivo: Calificador.java
 
 En este archivo se detectaron 14 problemas, aquí la captura de SonarLint:
 
@@ -51,3 +51,28 @@ Con esto se redujeron 3 problemas con el SELECT*
   private transient List<Clave> claves;
   private transient List<Rango> rangos;
 Se corrigió las demás clases. SonarLint indica que la variables que se mostró deberían ser "transient or serializable" y se debe a que se utiliza las clases como parte de un proceso que involucra concurrencia o serialización, y Java necesita asegurarse de que los objetos puedan ser serializados correctamente en esos contextos. Como estos campos no necesitan ser serializados, porque se usarán localmente dentro de la ejecución, se utilizará `transient`. Con esto se redujeron los problemas a 8.
+
+## Archivo: DatabaseConnection.java
+
+En este archivo se detectaron 7 problemas, aquí la captura de SonarLint:
+
+![Problemas en DatabaseConnetion.java](capturas/databaseconnection-problems.jpg)
+
+La mayoría de las advertencias son porque algunas sentencias como los `imports`no se utilizan, pero es porque el entorno original de desarrollo del código es `NetBeans` y se hace uso del `mysql-connector-j-8.4.0.jar`. Sin embargo, hay uno que viola la vulnerabilidad y se presentará a continuación.
+## Identificación de problemas
+### 3. Revoke and change this password, as it is compromised. (Lin. 32 col. 55)
+- **Categoría**: Vulnerability
+- **Severidad**: Critical
+
+## Muestra del código problemático
+- **Antes**:
+  ```java
+  public class DatabaseConnection {
+      private static final String URL = "jdbc:mysql://localhost:3306/tu_base_de_datos";
+      private static final String USER = "tu_usuario";
+      private static final String PASSWORD = "contraseña_comprometida"; // Contraseña comprometida
+
+      public static Connection getConnection() throws SQLException {
+          return DriverManager.getConnection(URL, USER, PASSWORD);
+      }
+  }
