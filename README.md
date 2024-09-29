@@ -79,12 +79,14 @@ La mayoría de las advertencias son porque algunas sentencias como los `imports`
 ## Descripción del problema
 - **Violación**: SonarLint detectó que la contraseña está expuesta en el código fuente, lo cual es una vulnerabilidad crítica. Las contraseñas no deben estar hardcodeadas en el código fuente, ya que pueden ser comprometidas fácilmente.
 ## Explicación de la refactorización
-- **Corrección**: Se cambió la contraseña comprometida por una nueva contraseña segura y se movió la configuración de la base de datos a un archivo de propiedades para evitar la exposición de credenciales en el código fuente.
+- **Corrección**: Se cambió la contraseña comprometida por una nueva contraseña segura y se movió la configuración de la base de datos a un archivo de propiedades (`database.properties`) en la carpeta raíz para evitar la exposición de credenciales en el código fuente. Como se muestra en las dos siguientes imágenes.
+![database.properties](capturas/database-properties.jpg)
+![contenido.database.properties](capturas/contenido-database-properties.jpg)
 
+Además se modifico el .gitignore para que obvie este archivo en el repositorio y solo el autor tenga acceso.
 ## Código corregido
 - **Después:**
   ```java
-    public class DatabaseConnection {
     private static final String PROPERTIES_FILE = "database.properties";
 
     public static Connection getConnection() throws SQLException, IOException {
@@ -99,4 +101,3 @@ La mayoría de las advertencias son porque algunas sentencias como los `imports`
 
         return DriverManager.getConnection(url, user, password);
     }
-}
