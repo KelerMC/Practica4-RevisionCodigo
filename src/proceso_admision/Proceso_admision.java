@@ -4,6 +4,7 @@
  */
 package proceso_admision;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -16,7 +17,7 @@ import java.sql.SQLException;
  */
 public class Proceso_admision {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         try {
             int threshold = 500; // Tamaño de carga del trabajo

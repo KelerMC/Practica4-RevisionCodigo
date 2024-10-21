@@ -4,6 +4,7 @@
  */
 package proceso_admision;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,7 +30,7 @@ public class Calificador {
         this.numParts = numParts;
     }
 
-    private List<Respuesta> obtenerRespuestas() throws SQLException {
+    private List<Respuesta> obtenerRespuestas() throws SQLException, IOException {
         List<Respuesta> respuestas = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT ide_iIndice, res_vcRespuesta FROM respuesta"); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -38,7 +41,7 @@ public class Calificador {
         return respuestas;
     }
 
-    private List<Clave> obtenerClaves() throws SQLException {
+    private List<Clave> obtenerClaves() throws SQLException, IOException {
         List<Clave> claves = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT cla_iIndice, cla_iPosicion, cla_vcRespuesta FROM clave"); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -49,7 +52,7 @@ public class Calificador {
         return claves;
     }
 
-    private List<Rango> obtenerRangos() throws SQLException {
+    private List<Rango> obtenerRangos() throws SQLException, IOException {
         List<Rango> rangos = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT ran_iIndiceMinimo, ran_iIndiceMaximo, cla_iPosicion FROM rango"); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -73,7 +76,7 @@ public class Calificador {
         return null; // Si no se encuentra ninguna clave correspondiente
     }
 
-    public void calificarRespuestas() throws SQLException {
+    public void calificarRespuestas() throws SQLException, IOException {
         List<Respuesta> respuestas = obtenerRespuestas();
         List<Clave> claves = obtenerClaves();
         List<Rango> rangos = obtenerRangos();
@@ -100,7 +103,13 @@ public class Calificador {
         @Override
         protected void compute() {
             if (respuestas.size() <= threshold) {
-                calificar(respuestas, claves, rangos);
+                try {
+                    calificar(respuestas, claves, rangos);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Calificador.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Calificador.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else {
                 int partSize = respuestas.size() / numParts;
                 List<CalificarTask> tasks = new ArrayList<>();
@@ -114,7 +123,7 @@ public class Calificador {
         }
     }
 
-    private void calificar(List<Respuesta> respuestas, List<Clave> claves, List<Rango> rangos) {
+    private void calificar(List<Respuesta> respuestas, List<Clave> claves, List<Rango> rangos) throws SQLException, IOException {
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.setAutoCommit(false);  // Desactivar el auto-commit
 
